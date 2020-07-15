@@ -1,4 +1,6 @@
-<div class="card employee-card">
+function managerMarkdown(data) {
+    return `
+    <div class="card employee-card">
     <div class="card-header">
         <h2 class="card-title">{{ name }}</h2>
         <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>{{ role }}</h3>
@@ -11,3 +13,6 @@
         </ul>
     </div>
 </div>
+`}
+
+module.exports = managerMarkdown;

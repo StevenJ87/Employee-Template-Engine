@@ -1,4 +1,5 @@
 const Manager = require("./lib/Manager");
+const managerMarkdown = require("./templates/manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
@@ -109,7 +110,7 @@ init()
         })
         .then(function(newEmploy){
             const newCard = managerMarkdown(newEmploy);
-            return writeFileAsync(`${newEmploy.title}_README.md`, newCard);
+            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
         })
     } else if(questions.role === "Engineer"){
         inquirer.prompt(engineer)
