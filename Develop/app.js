@@ -4,11 +4,14 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+
+const writeFileAsync = util.promisify(fs.writeFile);
 
 const questions = [
     {
@@ -100,16 +103,29 @@ function init(){
 init()
 .then((questions)=>{
     if (questions.role === "Manager"){
-        return inquirer.prompt(manager);
+        inquirer.prompt(manager)
+        .then(function(employData){
+            let newEmploy = new Manager();
+        })
+        .then(function(newEmploy){
+            const newCard = managerMarkdown(newEmploy);
+            return writeFileAsync(`${newEmploy.title}_README.md`, newCard);
+        })
     } else if(questions.role === "Engineer"){
-        return inquirer.prompt(engineer);
+        inquirer.prompt(engineer)
+        .then(function(employData){
+            let newEmploy = new Engineer();
+        })
+
     } else if (questions.role === "Intern"){
-        return inquirer.prompt(intern);
+        inquirer.prompt(intern)
+        .then(function(employData){
+            let newEmploy = new Intern();
+        })
+
     }
-})
-.then(function(employData){
-    console.log(employData)
 });
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
