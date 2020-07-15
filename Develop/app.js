@@ -10,7 +10,106 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const questions = [
+    {
+        type: "list",
+        message:"What is yourt role",
+        name: "role",
+        choices:[
+            'Manager',
+            'Engineer',
+            'Intern'
+        ]
+    },
+];
 
+const manager = [
+    {
+        type: "input",
+        message: "What is your name",
+        name: "name",
+    },
+    {
+        type: "input",
+        message:"What is your ID number",
+        name: "id"
+    },
+    {
+        type: "input",
+        message:"What is your email address",
+        name: "email"
+    },
+    {
+        type: "input",
+        message: "What is your office number",
+        name: "officeNumber",
+    },
+    
+];
+
+const engineer = [
+    {
+        type: "input",
+        message: "What is your name",
+        name: "name",
+    },
+    {
+        type: "input",
+        message:"What is your ID number",
+        name: "id"
+    },
+    {
+        type: "input",
+        message:"What is your email address",
+        name: "email"
+    },
+    {
+        type: "input",
+        message: "What is your GitHub username",
+        name: "github",
+    },
+];
+
+const intern = [
+    {
+        type: "input",
+        message: "What is your name",
+        name: "name",
+    },
+    {
+        type: "input",
+        message:"What is your ID number",
+        name: "id"
+    },
+    {
+        type: "input",
+        message:"What is your email address",
+        name: "email"
+    },
+    {
+        type: "input",
+        message: "What school do you attend",
+        name: "school",
+    },
+];
+
+function init(){
+    return inquirer.prompt(questions);
+};
+
+init()
+.then((questions)=>{
+    if (questions.role === "Manager"){
+        return inquirer.prompt(manager);
+    } else if(questions.role === "Engineer"){
+        return inquirer.prompt(engineer);
+    } else if (questions.role === "Intern"){
+        return inquirer.prompt(intern);
+    }
+})
+.then(function(employData){
+    console.log(employData)
+});
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
