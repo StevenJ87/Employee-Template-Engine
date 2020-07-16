@@ -1,5 +1,7 @@
 const Manager = require("./lib/Manager");
 const managerMarkdown = require("./templates/manager");
+const internMarkdown = require("./templates/intern");
+const engineerMarkdown = require("./templates/engineer");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
@@ -53,11 +55,6 @@ const manager = [
 const engineer = [
     {
         type: "input",
-        message: "What is your GitHub username",
-        name: "github",
-    },
-    {
-        type: "input",
         message: "What is your name",
         name: "name",
     },
@@ -70,17 +67,17 @@ const engineer = [
         type: "input",
         message:"What is your email address",
         name: "email"
+    },
+    {
+        type: "input",
+        message: "What is your GitHub username",
+        name: "github",
     },
 ];
 
 const intern = [
     {
         type: "input",
-        message: "What school do you attend",
-        name: "school",
-    },
-    {
-        type: "input",
         message: "What is your name",
         name: "name",
     },
@@ -93,6 +90,11 @@ const intern = [
         type: "input",
         message:"What is your email address",
         name: "email"
+    },
+    {
+        type: "input",
+        message: "What school do you attend",
+        name: "school",
     },
 ];
 
@@ -102,6 +104,14 @@ function init(){
 
 function manage(){
     return inquirer.prompt(manager)
+};
+
+function engine(){
+    return inquirer.prompt(engineer)
+};
+
+function inter(){
+    return inquirer.prompt(intern)
 };
 
 init()
@@ -116,15 +126,23 @@ init()
             return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
         })
     } else if(questions.role === "Engineer"){
-        inquirer.prompt(engineer)
-        .then(function(employData){
-            let newEmploy = new Engineer();
+        engine()
+        .then((engineer)=>{
+            return newEmploy = new Engineer(engineer.name,engineer.id,engineer.email,engineer.github);
+        })
+        .then(create=>{
+            const newCard = engineerMarkdown(newEmploy);
+            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
         })
 
     } else if (questions.role === "Intern"){
-        inquirer.prompt(intern)
-        .then(function(employData){
-            let newEmploy = new Intern();
+        inter()
+        .then((intern)=>{
+            return newEmploy = new Intern(intern.name,intern.id,intern.email,intern.school);
+        })
+        .then(create=>{
+            const newCard = internMarkdown(newEmploy);
+            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
         })
 
     }
