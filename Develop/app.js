@@ -48,10 +48,14 @@ const manager = [
         message: "What is your office number",
         name: "officeNumber",
     },
-    
 ];
 
 const engineer = [
+    {
+        type: "input",
+        message: "What is your GitHub username",
+        name: "github",
+    },
     {
         type: "input",
         message: "What is your name",
@@ -66,17 +70,17 @@ const engineer = [
         type: "input",
         message:"What is your email address",
         name: "email"
-    },
-    {
-        type: "input",
-        message: "What is your GitHub username",
-        name: "github",
     },
 ];
 
 const intern = [
     {
         type: "input",
+        message: "What school do you attend",
+        name: "school",
+    },
+    {
+        type: "input",
         message: "What is your name",
         name: "name",
     },
@@ -89,11 +93,6 @@ const intern = [
         type: "input",
         message:"What is your email address",
         name: "email"
-    },
-    {
-        type: "input",
-        message: "What school do you attend",
-        name: "school",
     },
 ];
 
@@ -101,14 +100,18 @@ function init(){
     return inquirer.prompt(questions);
 };
 
+function manage(){
+    return inquirer.prompt(manager)
+};
+
 init()
 .then((questions)=>{
     if (questions.role === "Manager"){
-        inquirer.prompt(manager)
-        .then(function(employData){
-            let newEmploy = new Manager();
+        manage()
+        .then((manager)=>{
+            return newEmploy = new Manager(manager.name,manager.id,manager.email,manager.officeNumber);
         })
-        .then(function(newEmploy){
+        .then(create=>{
             const newCard = managerMarkdown(newEmploy);
             return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
         })
