@@ -1,20 +1,18 @@
 const Manager = require("./lib/Manager");
-const managerMarkdown = require("./templates/manager");
-const internMarkdown = require("./templates/intern");
-const engineerMarkdown = require("./templates/engineer");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 const util = require("util");
+const render = require("./lib/htmlRenderer");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./lib/htmlRenderer");
-
 const writeFileAsync = util.promisify(fs.writeFile);
+
+const teamArray =[];
 
 const questions = [
     {
@@ -118,35 +116,48 @@ init()
 .then((questions)=>{
     if (questions.role === "Manager"){
         manage()
-        .then((manager)=>{
-            return newEmploy = new Manager(manager.name,manager.id,manager.email,manager.officeNumber);
-        })
-        .then(create=>{
-            const newCard = managerMarkdown(newEmploy);
-            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
+        .then((answers)=>{
+            let newManager = new Manager(answers.name,answers.id,answers.email,answers.officeNumber)
+            teamArray.push(newManager);
+            addmore();
         })
     } else if(questions.role === "Engineer"){
         engine()
-        .then((engineer)=>{
-            return newEmploy = new Engineer(engineer.name,engineer.id,engineer.email,engineer.github);
+        .then((answers)=>{
+            let newEngineer = new Engineer(answers.name,answers.id,answers.email,answers.github)
+            teamArray.push(newEngineer);
+            addmore();
         })
-        .then(create=>{
-            const newCard = engineerMarkdown(newEmploy);
-            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
-        })
-
     } else if (questions.role === "Intern"){
         inter()
-        .then((intern)=>{
-            return newEmploy = new Intern(intern.name,intern.id,intern.email,intern.school);
+        .then((answers)=>{
+            let newIntern = new Intern(answers.name,answers.id,answers.email,answers.school)
+            teamArray.push(newIntern);
+            addmore();
         })
-        .then(create=>{
-            const newCard = internMarkdown(newEmploy);
-            return writeFileAsync(`${newEmploy.name}_README.md`, newCard);
-        })
-
     }
 });
+
+function addmore(){
+    inquirer.prompt([
+        {
+        name:"addToTeam",
+        type:"confirm",
+        message:"Do you want to add more team members?"
+        },
+    ]).then(response=>{
+        if(response.addToTeam){
+            init();
+        } else{
+            const teamHTML = render(teamArray);
+            console.log(teamArray)
+            console.log(teamHTML);
+            fs.writeFile(outputPath, teamHTML,function(err){
+                if(err)throw err;
+            })
+        }
+    })
+}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
