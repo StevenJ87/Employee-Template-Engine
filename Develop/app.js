@@ -10,8 +10,6 @@ const render = require("./lib/htmlRenderer");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const writeFileAsync = util.promisify(fs.writeFile);
-
 const teamArray =[];
 
 const questions = [
@@ -148,10 +146,7 @@ function addmore(){
                 }
             });
         } else{
-            const teamHTML = render(teamArray);
-            console.log(teamArray)
-            console.log(teamHTML);
-            fs.writeFile(outputPath, teamHTML,function(err){
+            fs.writeFileSync(outputPath, render(teamArray),"utf-8",function(err){
                 if(err)throw err;
             })
         }
