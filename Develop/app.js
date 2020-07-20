@@ -112,42 +112,41 @@ function inter(){
     return inquirer.prompt(intern)
 };
 
-init()
-.then((questions)=>{
-    if (questions.role === "Manager"){
-        manage()
-        .then((answers)=>{
-            let newManager = new Manager(answers.name,answers.id,answers.email,answers.officeNumber)
-            teamArray.push(newManager);
-            addmore();
-        })
-    } else if(questions.role === "Engineer"){
-        engine()
-        .then((answers)=>{
-            let newEngineer = new Engineer(answers.name,answers.id,answers.email,answers.github)
-            teamArray.push(newEngineer);
-            addmore();
-        })
-    } else if (questions.role === "Intern"){
-        inter()
-        .then((answers)=>{
-            let newIntern = new Intern(answers.name,answers.id,answers.email,answers.school)
-            teamArray.push(newIntern);
-            addmore();
-        })
-    }
-});
+addmore();
 
 function addmore(){
     inquirer.prompt([
         {
         name:"addToTeam",
         type:"confirm",
-        message:"Do you want to add more team members?"
+        message:"Do you want to add a team members?"
         },
     ]).then(response=>{
-        if(response.addToTeam){
-            init();
+        if(response.addToTeam===true){
+            init().then((questions)=>{
+                if (questions.role === "Manager"){
+                    manage()
+                    .then((answers)=>{
+                        let newManager = new Manager(answers.name,answers.id,answers.email,answers.officeNumber)
+                        teamArray.push(newManager);
+                        addmore();
+                    })
+                } else if(questions.role === "Engineer"){
+                    engine()
+                    .then((answers)=>{
+                        let newEngineer = new Engineer(answers.name,answers.id,answers.email,answers.github)
+                        teamArray.push(newEngineer);
+                        addmore();
+                    })
+                } else if (questions.role === "Intern"){
+                    inter()
+                    .then((answers)=>{
+                        let newIntern = new Intern(answers.name,answers.id,answers.email,answers.school)
+                        teamArray.push(newIntern);
+                        addmore();
+                    })
+                }
+            });
         } else{
             const teamHTML = render(teamArray);
             console.log(teamArray)
